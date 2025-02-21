@@ -25,7 +25,7 @@ def main():
     print("-" * 50)
     
     while True:
-        user_input = input("\nYou: \n")
+        user_input = input("\nYou: ")
         
         if user_input.lower() in ['quit', 'exit']:
             print("\nGoodbye!")
