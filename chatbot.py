@@ -25,14 +25,14 @@ def main():
     print("-" * 50)
     
     while True:
-        user_input = input("\nYou: ")
+        user_input = input("\nYou: \n")
         
         if user_input.lower() in ['quit', 'exit']:
             print("\nGoodbye!")
             break
             
         response = chat_with_bot(user_input)
-        print("\nChatBot:", response)
+        print("\nChatBot:\n", response)
 
 if __name__ == "__main__":
     main() 
