@@ -32,7 +32,7 @@ def main():
             break
             
         response = chat_with_bot(user_input)
-        print("\nChatBot:\n", response)
+        print("\nChatBot:\n\n", response)
 
 if __name__ == "__main__":
     main() 
