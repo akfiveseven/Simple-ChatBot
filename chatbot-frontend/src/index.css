@@ -269,4 +269,47 @@ button:focus-visible {
     30% {
         transform: translateY(-4px);
     }
+}
+
+/* Update conversation item styles */
+.conversation-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.edit-conversation-btn {
+  background-color: transparent;
+  border: none;
+  color: #666;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.edit-conversation-btn:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.edit-form {
+  width: 100%;
+}
+
+.edit-form input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.edit-form input:focus {
+  outline: none;
+  border-color: #075e54;
+  box-shadow: 0 0 3px rgba(7, 94, 84, 0.3);
 } 

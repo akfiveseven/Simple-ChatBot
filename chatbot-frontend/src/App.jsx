@@ -13,6 +13,8 @@ function App() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editingText, setEditingText] = useState("");
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -119,6 +121,37 @@ function App() {
     }
   };
 
+  const startEditing = (conv, e) => {
+    e.stopPropagation();
+    setEditingId(conv.id);
+    setEditingText(conv.preview);
+  };
+
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    if (!editingId || !editingText.trim()) return;
+
+    try {
+      await axios.patch(`http://127.0.0.1:1234/api/conversations/${editingId}`, {
+        preview: editingText.trim()
+      });
+      
+      // Update the local state immediately
+      setConversations(prevConversations => 
+        prevConversations.map(conv => 
+          conv.id === editingId 
+            ? { ...conv, preview: editingText.trim() }
+            : conv
+        )
+      );
+      
+      setEditingId(null);
+      setEditingText("");
+    } catch (error) {
+      console.error("Error updating conversation:", error);
+    }
+  };
+
   return (
     <div className="app-container">
       <div className="sidebar">
@@ -135,20 +168,47 @@ function App() {
                 className="conversation-content"
                 onClick={() => loadConversation(conv.id)}
               >
-                <div className="conversation-preview">
-                  {truncateText(conv.preview, 25)}
-                </div>
-                <div className="conversation-date">
-                  {new Date(conv.updated_at).toLocaleDateString()}
-                </div>
+                {editingId === conv.id ? (
+                  <form 
+                    className="edit-form" 
+                    onSubmit={handleEdit}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <input
+                      type="text"
+                      value={editingText}
+                      onChange={(e) => setEditingText(e.target.value)}
+                      onBlur={handleEdit}
+                      autoFocus
+                    />
+                  </form>
+                ) : (
+                  <>
+                    <div className="conversation-preview">
+                      {truncateText(conv.preview, 20)}
+                    </div>
+                    <div className="conversation-date">
+                      {new Date(conv.updated_at).toLocaleDateString()}
+                    </div>
+                  </>
+                )}
               </div>
-              <button 
-                className="delete-conversation-btn"
-                onClick={(e) => deleteConversation(conv.id, e)}
-                title="Delete conversation"
-              >
-                ×
-              </button>
+              <div className="conversation-actions">
+                <button 
+                  className="edit-conversation-btn"
+                  onClick={(e) => startEditing(conv, e)}
+                  title="Edit conversation name"
+                >
+                  ✎
+                </button>
+                <button 
+                  className="delete-conversation-btn"
+                  onClick={(e) => deleteConversation(conv.id, e)}
+                  title="Delete conversation"
+                >
+                  ×
+                </button>
+              </div>
             </div>
           ))}
         </div>

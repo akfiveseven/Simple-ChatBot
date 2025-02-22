@@ -128,6 +128,23 @@ def delete_conversation(conversation_id):
     save_conversations()
     return jsonify({'message': 'Conversation deleted successfully'})
 
+@app.route('/api/conversations/<conversation_id>', methods=['PATCH'])
+def update_conversation(conversation_id):
+    if conversation_id not in conversations:
+        return jsonify({'error': 'Conversation not found'}), 404
+    
+    data = request.json
+    if 'preview' in data:
+        # Update both the preview and the last message content
+        preview = data['preview'].strip()
+        if conversations[conversation_id]['messages']:
+            conversations[conversation_id]['messages'][-1]['content'] = preview
+        conversations[conversation_id]['preview'] = preview
+        save_conversations()
+        return jsonify({'message': 'Conversation updated successfully'})
+    
+    return jsonify({'error': 'No updates provided'}), 400
+
 if __name__ == "__main__":
     app.run(debug=True, port=1234) 
 
