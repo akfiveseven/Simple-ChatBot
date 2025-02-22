@@ -88,6 +88,16 @@ button:focus-visible {
   color: white;
   border: none;
   border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.new-chat-btn:hover {
+  background-color: #128C7E;
 }
 
 .conversations-list {
@@ -312,4 +322,13 @@ button:focus-visible {
   outline: none;
   border-color: #075e54;
   box-shadow: 0 0 3px rgba(7, 94, 84, 0.3);
+}
+
+/* Update the existing sidebar header */
+.chat-history-header {
+  font-weight: 500;
+  color: #666;
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 10px;
 } 

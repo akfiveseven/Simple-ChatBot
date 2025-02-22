@@ -152,12 +152,21 @@ function App() {
     }
   };
 
+  const handleNewChat = async () => {
+    setMessages([]);
+    setCurrentConversationId(null);
+    setInput("");
+  };
+
   return (
     <div className="app-container">
       <div className="sidebar">
-        <div className="new-chat-btn">
-          Chat History
-        </div>
+        <button 
+          className="new-chat-btn"
+          onClick={handleNewChat}
+        >
+          + New Chat
+        </button>
         <div className="conversations-list">
           {conversations.map((conv) => (
             <div
