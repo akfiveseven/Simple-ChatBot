@@ -211,13 +211,14 @@ button:focus-visible {
     border-bottom-right-radius: 5px;
     margin-top: 2rem;
     margin-bottom: 2rem;
+    width: 36rem;
 }
 
 .bot-message {
     background-color: black;
     margin-right: auto;
     border-bottom-left-radius: 5px;
-    width: 16rem;
+    width: 36rem;
 }
 
 .input-form {
@@ -353,4 +354,24 @@ button:focus-visible {
 .welcome-message p {
   font-size: 1rem;
   line-height: 1.5;
+}
+
+.send-btn {
+  padding: 10px 20px;
+  background-color: #075e54;
+  color: black;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.send-btn.has-content {
+  color: white;
+}
+
+.send-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  color: black;
 } 

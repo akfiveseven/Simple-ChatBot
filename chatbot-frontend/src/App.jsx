@@ -265,7 +265,11 @@ function App() {
             placeholder="Type your message..."
             disabled={isLoading}
           />
-          <button type="submit" disabled={isLoading}>
+          <button 
+            className={`send-btn ${input.trim() ? 'has-content' : ''}`} 
+            type="submit" 
+            disabled={isLoading}
+          >
             Send
           </button>
         </form>
