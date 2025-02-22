@@ -4,6 +4,8 @@ from flask_cors import CORS
 from config import OPENAI_API_KEY
 from datetime import datetime
 import uuid
+import json
+import os
 
 # Configure OpenAI with your API key
 openai.api_key = OPENAI_API_KEY
@@ -11,8 +13,26 @@ openai.api_key = OPENAI_API_KEY
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# In-memory storage for conversations
-conversations = {}
+# File to store conversations
+CONVERSATIONS_FILE = 'conversations.json'
+
+# Load conversations from file
+def load_conversations():
+    if os.path.exists(CONVERSATIONS_FILE):
+        try:
+            with open(CONVERSATIONS_FILE, 'r') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            return {}
+    return {}
+
+# Save conversations to file
+def save_conversations():
+    with open(CONVERSATIONS_FILE, 'w') as f:
+        json.dump(conversations, f, indent=2)
+
+# Initialize conversations from file
+conversations = load_conversations()
 
 def create_conversation():
     conversation_id = str(uuid.uuid4())
@@ -21,6 +41,7 @@ def create_conversation():
         'created_at': datetime.now().isoformat(),
         'updated_at': datetime.now().isoformat()
     }
+    save_conversations()  # Save after creating new conversation
     return conversation_id
 
 def chat_with_bot(messages):
@@ -89,6 +110,9 @@ def chat(conversation_id):
     
     # Update conversation timestamp
     conversations[conversation_id]['updated_at'] = datetime.now().isoformat()
+    
+    # Save conversations after update
+    save_conversations()
     
     return jsonify({
         'response': response,

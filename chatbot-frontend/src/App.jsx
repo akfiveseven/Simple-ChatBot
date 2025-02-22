@@ -59,23 +59,31 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
-    if (!currentConversationId) {
-      await createNewConversation();
-    }
 
     const userMessage = input.trim();
-    setMessages((prev) => [...prev, { text: userMessage, sender: "user" }]);
     setInput("");
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`http://127.0.0.1:1234/api/chat/${currentConversationId}`, {
+      let activeConversationId = currentConversationId;
+      
+      // If no conversation exists, create one first
+      if (!activeConversationId) {
+        const response = await axios.post("http://127.0.0.1:1234/api/conversations");
+        activeConversationId = response.data.conversation_id;
+        setCurrentConversationId(activeConversationId);
+      }
+
+      // Now send the message
+      setMessages((prev) => [...prev, { text: userMessage, sender: "user" }]);
+      
+      const chatResponse = await axios.post(`http://127.0.0.1:1234/api/chat/${activeConversationId}`, {
         message: userMessage,
       });
 
       setMessages((prev) => [
         ...prev,
-        { text: response.data.response, sender: "bot" },
+        { text: chatResponse.data.response, sender: "bot" },
       ]);
       await fetchConversations(); // Refresh conversation list
     } catch (error) {
@@ -95,9 +103,9 @@ function App() {
   return (
     <div className="app-container">
       <div className="sidebar">
-        <button onClick={createNewConversation} className="new-chat-btn">
-          Save Current Chat
-        </button>
+        <div className="new-chat-btn">
+          Chat History
+        </div>
         <div className="conversations-list">
           {conversations.map((conv) => (
             <div
