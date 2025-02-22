@@ -229,6 +229,12 @@ function App() {
         </div>
 
         <div className="messages-container">
+          {messages.length === 0 && !isLoading && (
+            <div className="welcome-message">
+              <h3>Welcome to ChatBot! 👋</h3>
+              <p>Type a message below to start a new conversation.</p>
+            </div>
+          )}
           {messages.map((message, index) => (
             <div
               key={index}
