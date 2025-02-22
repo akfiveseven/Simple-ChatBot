@@ -164,6 +164,8 @@ function App() {
         <button 
           className="new-chat-btn"
           onClick={handleNewChat}
+          disabled={messages.length === 0}
+          title={messages.length === 0 ? "Already in a new chat" : "Start a new chat"}
         >
           + New Chat
         </button>

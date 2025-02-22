@@ -93,11 +93,17 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   font-weight: 500;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
-.new-chat-btn:hover {
+.new-chat-btn:hover:not(:disabled) {
   background-color: #128C7E;
+}
+
+.new-chat-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .conversations-list {
