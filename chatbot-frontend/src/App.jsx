@@ -52,7 +52,7 @@ function App() {
 
   const loadConversation = async (conversationId) => {
     try {
-      const response = await axios.get(`http://127.0.0.1:1234/api/conversations/${conversationId}`);
+      const response = await axios.get(`http://127.0.0.1:4321/api/conversations/${conversationId}`);
       setCurrentConversationId(conversationId);
       setMessages(response.data.messages.map(msg => ({
         text: msg.content,
@@ -130,7 +130,7 @@ function App() {
     if (!editingId || !editingText.trim()) return;
 
     try {
-      await axios.patch(`http://127.0.0.1:1234/api/conversations/${editingId}`, {
+      await axios.patch(`http://127.0.0.1:4321/api/conversations/${editingId}`, {
         preview: editingText.trim()
       });
       
@@ -156,6 +156,14 @@ function App() {
     setInput("");
   };
 
+  // Add a new function to handle input blur
+  const handleInputBlur = (e) => {
+    // Only handle blur if we're not pressing Escape
+    if (!e.currentTarget.dataset.escapePressed) {
+      handleEdit(e);
+    }
+  };
+
   return (
     <div className="app-container">
       <div className="sidebar">
@@ -176,6 +184,7 @@ function App() {
               <div 
                 className="conversation-content"
                 onClick={() => loadConversation(conv.id)}
+                style={{ cursor: 'pointer' }}
               >
                 {editingId === conv.id ? (
                   <form 
@@ -187,14 +196,26 @@ function App() {
                       type="text"
                       value={editingText}
                       onChange={(e) => setEditingText(e.target.value)}
-                      onBlur={handleEdit}
+                      onBlur={handleInputBlur}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Escape') {
+                          e.currentTarget.dataset.escapePressed = 'true';
+                          setEditingId(null);
+                          setEditingText("");
+                        }
+                      }}
+                      onKeyUp={(e) => {
+                        if (e.key === 'Escape') {
+                          delete e.currentTarget.dataset.escapePressed;
+                        }
+                      }}
                       autoFocus
                     />
                   </form>
                 ) : (
                   <>
                     <div className="conversation-preview">
-                      {truncateText(conv.preview, 20)}
+                      {truncateText(conv.preview || 'New Conversation', 20)}
                     </div>
                     <div className="conversation-date">
                       {new Date(conv.updated_at).toLocaleDateString()}
@@ -266,9 +287,9 @@ function App() {
             disabled={isLoading}
           />
           <button 
-            className={`send-btn ${input.trim() ? 'has-content' : ''}`} 
             type="submit" 
-            disabled={isLoading}
+            disabled={!input.trim() || isLoading}
+            className={`send-btn ${input.trim() ? 'has-content' : ''}`}
           >
             Send
           </button>

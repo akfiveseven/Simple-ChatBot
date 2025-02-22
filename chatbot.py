@@ -39,9 +39,10 @@ def create_conversation():
     conversations[conversation_id] = {
         'messages': [],
         'created_at': datetime.now().isoformat(),
-        'updated_at': datetime.now().isoformat()
+        'updated_at': datetime.now().isoformat(),
+        'preview': 'New Conversation'  # Add default preview
     }
-    save_conversations()  # Save after creating new conversation
+    save_conversations()
     return conversation_id
 
 def chat_with_bot(messages):
@@ -67,10 +68,13 @@ def get_conversations():
             'id': conv_id,
             'created_at': data['created_at'],
             'updated_at': data['updated_at'],
-            'preview': data['messages'][-1]['content'] if data['messages'] else 'Empty conversation'
+            'preview': data.get('preview', data['messages'][-1]['content'] if data['messages'] else 'Empty conversation')
         }
         for conv_id, data in conversations.items()
     ]
+    
+    # Sort conversations by updated_at timestamp (most recent first)
+    conversation_list.sort(key=lambda x: x['updated_at'], reverse=True)
     return jsonify(conversation_list)
 
 @app.route('/api/conversations', methods=['POST'])
@@ -109,10 +113,12 @@ def chat(conversation_id):
         'content': response
     })
     
+    # Update preview with bot's latest response
+    conversations[conversation_id]['preview'] = response
+    
     # Update conversation timestamp
     conversations[conversation_id]['updated_at'] = datetime.now().isoformat()
     
-    # Save conversations after update
     save_conversations()
     
     return jsonify({
@@ -136,11 +142,10 @@ def update_conversation(conversation_id):
     
     data = request.json
     if 'preview' in data:
-        # Update both the preview and the last message content
+        # Update only the preview field
         preview = data['preview'].strip()
-        if conversations[conversation_id]['messages']:
-            conversations[conversation_id]['messages'][-1]['content'] = preview
         conversations[conversation_id]['preview'] = preview
+        conversations[conversation_id]['updated_at'] = datetime.now().isoformat()
         save_conversations()
         return jsonify({'message': 'Conversation updated successfully'})
     
