@@ -7,8 +7,8 @@ import uuid
 import json
 import os
 
-# Configure OpenAI with your API key
-openai.api_key = OPENAI_API_KEY
+# Simplify OpenAI client initialization
+client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -49,7 +49,8 @@ def chat_with_bot(messages):
         # Include system message and all previous messages
         full_messages = [{"role": "system", "content": "You are a helpful assistant."}] + messages
         
-        response = openai.ChatCompletion.create(
+        # Update the API call to use the new format
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=full_messages
         )
@@ -146,5 +147,5 @@ def update_conversation(conversation_id):
     return jsonify({'error': 'No updates provided'}), 400
 
 if __name__ == "__main__":
-    app.run(debug=True, port=1234) 
+    app.run(debug=True, port=4321) 
 

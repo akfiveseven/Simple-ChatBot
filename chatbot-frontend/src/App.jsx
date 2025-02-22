@@ -31,7 +31,7 @@ function App() {
 
   const fetchConversations = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:1234/api/conversations");
+      const response = await axios.get("http://127.0.0.1:4321/api/conversations");
       setConversations(response.data);
     } catch (error) {
       console.error("Error fetching conversations:", error);
@@ -74,17 +74,15 @@ function App() {
     try {
       let activeConversationId = currentConversationId;
       
-      // If no conversation exists, create one first
       if (!activeConversationId) {
-        const response = await axios.post("http://127.0.0.1:1234/api/conversations");
+        const response = await axios.post("http://127.0.0.1:4321/api/conversations");
         activeConversationId = response.data.conversation_id;
         setCurrentConversationId(activeConversationId);
       }
 
-      // Now send the message
       setMessages((prev) => [...prev, { text: userMessage, sender: "user" }]);
       
-      const chatResponse = await axios.post(`http://127.0.0.1:1234/api/chat/${activeConversationId}`, {
+      const chatResponse = await axios.post(`http://127.0.0.1:4321/api/chat/${activeConversationId}`, {
         message: userMessage,
       });
 
@@ -110,7 +108,7 @@ function App() {
   const deleteConversation = async (conversationId, e) => {
     e.stopPropagation(); // Prevent triggering the conversation selection
     try {
-      await axios.delete(`http://127.0.0.1:1234/api/conversations/${conversationId}`);
+      await axios.delete(`http://127.0.0.1:4321/api/conversations/${conversationId}`);
       if (conversationId === currentConversationId) {
         setCurrentConversationId(null);
         setMessages([]);
