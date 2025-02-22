@@ -5,7 +5,7 @@ AI chatbot with Python3 using OpenAI API
 ## How To Use
 
 1.  Clone the repository
-2.  Install OpenAI v0.28 module: `pip install openai --upgrade`
+2.  Install OpenAI v0.28 module: `pip install openai` or `pip install openai --upgrade`
 3.  Install flask: `pip install flask flask-cors`
 4.  Create `config.py` file and add your API key: `OPENAI_API_KEY = "<your-api-key>"`
 5.  Run program: `python3 chatbot.py`
