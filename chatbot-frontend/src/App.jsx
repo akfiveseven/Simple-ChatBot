@@ -1,6 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
+const truncateText = (text, maxLength) => {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + '...';
+};
+
 function App() {
   const [conversations, setConversations] = useState([]);
   const [currentConversationId, setCurrentConversationId] = useState(null);
@@ -100,6 +105,20 @@ function App() {
     setIsLoading(false);
   };
 
+  const deleteConversation = async (conversationId, e) => {
+    e.stopPropagation(); // Prevent triggering the conversation selection
+    try {
+      await axios.delete(`http://127.0.0.1:1234/api/conversations/${conversationId}`);
+      if (conversationId === currentConversationId) {
+        setCurrentConversationId(null);
+        setMessages([]);
+      }
+      await fetchConversations();
+    } catch (error) {
+      console.error("Error deleting conversation:", error);
+    }
+  };
+
   return (
     <div className="app-container">
       <div className="sidebar">
@@ -111,12 +130,25 @@ function App() {
             <div
               key={conv.id}
               className={`conversation-item ${conv.id === currentConversationId ? 'active' : ''}`}
-              onClick={() => loadConversation(conv.id)}
             >
-              <div className="conversation-preview">{conv.preview}</div>
-              <div className="conversation-date">
-                {new Date(conv.updated_at).toLocaleDateString()}
+              <div 
+                className="conversation-content"
+                onClick={() => loadConversation(conv.id)}
+              >
+                <div className="conversation-preview">
+                  {truncateText(conv.preview, 25)}
+                </div>
+                <div className="conversation-date">
+                  {new Date(conv.updated_at).toLocaleDateString()}
+                </div>
               </div>
+              <button 
+                className="delete-conversation-btn"
+                onClick={(e) => deleteConversation(conv.id, e)}
+                title="Delete conversation"
+              >
+                ×
+              </button>
             </div>
           ))}
         </div>

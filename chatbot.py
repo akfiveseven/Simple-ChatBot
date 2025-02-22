@@ -119,6 +119,15 @@ def chat(conversation_id):
         'conversation_id': conversation_id
     })
 
+@app.route('/api/conversations/<conversation_id>', methods=['DELETE'])
+def delete_conversation(conversation_id):
+    if conversation_id not in conversations:
+        return jsonify({'error': 'Conversation not found'}), 404
+    
+    del conversations[conversation_id]
+    save_conversations()
+    return jsonify({'message': 'Conversation deleted successfully'})
+
 if __name__ == "__main__":
     app.run(debug=True, port=1234) 
 

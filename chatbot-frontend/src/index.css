@@ -96,6 +96,9 @@ button:focus-visible {
 }
 
 .conversation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px;
   border-radius: 8px;
   margin-bottom: 10px;
@@ -113,17 +116,41 @@ button:focus-visible {
   background-color: #dcf8c6;
 }
 
+.conversation-content {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
 .conversation-preview {
   font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 4px;
 }
 
 .conversation-date {
   font-size: 12px;
   color: #666;
-  margin-top: 5px;
+}
+
+.delete-conversation-btn {
+  background-color: transparent;
+  border: none;
+  color: #666;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.delete-conversation-btn:hover {
+  background-color: #ff4444;
+  color: white;
 }
 
 .chatbot-container {
@@ -143,7 +170,7 @@ button:focus-visible {
 
 .chat-header {
     background-color: #075e54;
-    color: black;
+    color: white;
     padding: 15px;
     border-radius: 8px 8px 0 0;
 }
